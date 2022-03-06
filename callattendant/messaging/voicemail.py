@@ -49,12 +49,12 @@ class VoiceMail:
         self.config["MESSAGE_EVENT"] = self.message_event
 
         # Initialize the message indicators (LEDs)
-        self.message_indicator = MessageIndicator(
-                self.config.get("GPIO_LED_MESSAGE_PIN", GPIO_MESSAGE),
-                self.config.get("GPIO_LED_MESSAGE_BRIGHTNESS", 100))
-        pins = self.config.get("GPIO_LED_MESSAGE_COUNT_PINS", GPIO_MESSAGE_COUNT_PINS)
-        kwargs = self.config.get("GPIO_LED_MESSAGE_COUNT_KWARGS", GPIO_MESSAGE_COUNT_KWARGS)
-        self.message_count_indicator = MessageCountIndicator(*pins, **kwargs)
+        #self.message_indicator = MessageIndicator(
+        #        self.config.get("GPIO_LED_MESSAGE_PIN", GPIO_MESSAGE),
+        #        self.config.get("GPIO_LED_MESSAGE_BRIGHTNESS", 100))
+        #pins = self.config.get("GPIO_LED_MESSAGE_COUNT_PINS", GPIO_MESSAGE_COUNT_PINS)
+        #kwargs = self.config.get("GPIO_LED_MESSAGE_COUNT_KWARGS", GPIO_MESSAGE_COUNT_KWARGS)
+        #self.message_count_indicator = MessageCountIndicator(*pins, **kwargs)
 
         # Create the Message object used to interface with the DB
         self.messages = Message(db, config)
@@ -77,8 +77,8 @@ class VoiceMail:
         """
         self._stop_event.set()
         self._thread.join()
-        self.message_indicator.close()
-        self.message_count_indicator.close()
+        #self.message_indicator.close()
+        #self.message_count_indicator.close()
 
     def _event_handler(self):
         """
@@ -102,7 +102,7 @@ class VoiceMail:
         goodbye_file = voice_mail['goodbye_file']
 
         # Indicate the user is in the menu
-        self.message_indicator.blink()
+        #self.message_indicator.blink()
 
         tries = 0
         wait_secs = 8   # Candidate for configuration
@@ -144,7 +144,7 @@ class VoiceMail:
         self.modem.play_audio(leave_msg_file)
 
         # Show recording in progress
-        self.message_indicator.turn_on()
+        #self.message_indicator.turn_on()
 
         if self.modem.record_audio(filepath, detect_silence):
             # Save to Message table (message.add will update the indicator)
@@ -167,15 +167,15 @@ class VoiceMail:
         unplayed_count = self.messages.get_unplayed_count()
         if self.config["DEBUG"]:
             print("Resetting Message Indicator to show {} unplayed messages".format(unplayed_count))
-        if unplayed_count > 0:
-            self.message_indicator.pulse()
-            if unplayed_count < 10:
-                self.message_count_indicator.display(unplayed_count)
-                self.message_count_indicator.decimal_point = False
-            else:
-                self.message_count_indicator.display(9)
-                self.message_count_indicator.decimal_point = True
-        else:
-            self.message_indicator.turn_off()
-            self.message_count_indicator.display(' ')
-            self.message_count_indicator.decimal_point = False
+        #if unplayed_count > 0:
+        #    self.message_indicator.pulse()
+        #    if unplayed_count < 10:
+        #        self.message_count_indicator.display(unplayed_count)
+        #        self.message_count_indicator.decimal_point = False
+        #    else:
+        #        self.message_count_indicator.display(9)
+        #        self.message_count_indicator.decimal_point = True
+        #else:
+        #    self.message_indicator.turn_off()
+        #    self.message_count_indicator.display(' ')
+        #    self.message_count_indicator.decimal_point = False
